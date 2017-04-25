@@ -162,7 +162,6 @@ func generateDocs(curpath string) {
 		if im.Name != nil {
 			localName = im.Name.Name
 		}
-		//println("gongyaofei", im.Path.Value)
 		analisyscontrollerPkg(localName, im.Path.Value)
 	}
 	for _, d := range f.Decls {
@@ -283,13 +282,9 @@ func setTopPath(pkgpath string) {
 	//		curntPath = path.Join(curntPath, "..")
 	//	}
 	topPath = curntPath
-	println("gongyaofei curntPath", curntPath)
 	_, vendorPath, _, _ = runtime.Caller(0)
-	println("gongyaofei vendorPath1", vendorPath)
 	index2 := strings.Index(vendorPath, "vendor/")
 	vendorPath = vendorPath[0 : index2+7]
-	println("gongyaofei vendorPath2", vendorPath)
-
 	// println("top path is", topPath)
 	//	println(pkgpath, "topath is ", topPath)
 }
@@ -602,7 +597,6 @@ func getModelPath(modelName string, sourceFile *ast.File, sourceFilePkg string) 
 		paths := strings.Split(path, "/")
 		//println(paths[len(paths)-1], strs[0])
 		if paths[len(paths)-1] == strs[0] {
-			//println("gongyaofei path", path)
 			return path
 		}
 	}
@@ -627,17 +621,14 @@ func getInternalModel(str string, sourceFile *ast.File, sourceFilePkg string, m 
 	pkgpath := strings.Join(strs[:len(strs)-1], "/")
 
 	if pkgRealpath == "" {
-		//println("gongyaofei", str, sourceFile, sourceFilePkg)
 		pkgRealpath = path.Join(topPath, getModelPath(str, sourceFile, sourceFilePkg))
 		if !utils.FileExists(pkgRealpath) {
-			println("gongyaofei vendorPath3", vendorPath)
 			pkgRealpath = path.Join(vendorPath, getModelPath(str, sourceFile, sourceFilePkg))
 			if !utils.FileExists(pkgRealpath){
-				ColorLog("[ERRO] gongyaofei the pkgRealpath is not exist %s\n", pkgRealpath)
+				ColorLog("[ERRO] the pkgRealpath is not exist %s\n", pkgRealpath)
 				os.Exit(1)
 			}
 		}
-		//println("gongyaofei pkgRealpath", pkgRealpath)
 	}
 	fileSet := token.NewFileSet()
 	astPkgs, err := parser.ParseDir(fileSet, pkgRealpath, func(info os.FileInfo) bool {
