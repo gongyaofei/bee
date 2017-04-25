@@ -271,18 +271,25 @@ func analisysNSInclude(baseurl string, ce *ast.CallExpr) string {
 }
 
 var topPath string
+var vendorPath string
 
 //dapeng 找到src 目录
 func setTopPath(pkgpath string) {
 	curntPath, _ := os.Getwd()
-	index := strings.Index(curntPath, "src/")
-	curntPath = curntPath[0 : index+4]
+	index1 := strings.Index(curntPath, "src/")
+	curntPath = curntPath[0 : index1+4]
 	//	deep := len(strings.Split(pkgpath, "/"))
 	//	for i := 0; i < deep-1; i++ {
 	//		curntPath = path.Join(curntPath, "..")
 	//	}
 	topPath = curntPath
-	//println("gongyaofei", curntPath)
+	println("gongyaofei curntPath", curntPath)
+	_, vendorPath, _, _ = runtime.Caller(0)
+	println("gongyaofei vendorPath1", vendorPath)
+	index2 := strings.Index(vendorPath, "vendor/")
+	vendorPath = vendorPath[0 : index2+7]
+	println("gongyaofei vendorPath2", vendorPath)
+
 	// println("top path is", topPath)
 	//	println(pkgpath, "topath is ", topPath)
 }
@@ -623,9 +630,10 @@ func getInternalModel(str string, sourceFile *ast.File, sourceFilePkg string, m 
 		//println("gongyaofei", str, sourceFile, sourceFilePkg)
 		pkgRealpath = path.Join(topPath, getModelPath(str, sourceFile, sourceFilePkg))
 		if !utils.FileExists(pkgRealpath) {
-			pkgRealpath = path.Join(topPath, "github.com/oceanwing/roav_backend/vendor", getModelPath(str, sourceFile, sourceFilePkg))
+			println("gongyaofei vendorPath3", vendorPath)
+			pkgRealpath = path.Join(vendorPath, getModelPath(str, sourceFile, sourceFilePkg))
 			if !utils.FileExists(pkgRealpath){
-				ColorLog("[ERRO] the pkgRealpath is not exist %s\n", pkgRealpath)
+				ColorLog("[ERRO] gongyaofei the pkgRealpath is not exist %s\n", pkgRealpath)
 				os.Exit(1)
 			}
 		}
